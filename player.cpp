@@ -6,7 +6,7 @@ Player::Player(sf::Texture* texture, sf::Vector2u imageCount, float switchTime, 
 	this->speed = speed;
 	row = 0;
  	faceRight = true;
-	body.setSize(sf::Vector2f(256.0f, 250.0f));
+	body.setSize(sf::Vector2f(250.0f, 250.0f));
 	body.setOrigin(body.getSize() / 2.0f);
 	body.setPosition(375,275); 
 	body.setTexture(texture);
@@ -14,26 +14,34 @@ Player::Player(sf::Texture* texture, sf::Vector2u imageCount, float switchTime, 
 
 Player::~Player(){}
 
-bool collision(float coordsx, float coordsy){
+bool collisionx(float coordsx){
+	if(coordsx > 738) // the jpg includes whitespace all around the bear so that's why this number seems so random
+		return true;
 	return false;
 }
+bool collisiony(float coordsy){
+	if(coordsy > 275)
+		return true;
+	return false;
+}
+
 
 void Player::Update(float deltaTime, float playercoordsx, float playercoordsy){
 	sf::Vector2f movement(0.0f, 0.0f);
 	if(sf::Keyboard::isKeyPressed(sf::Keyboard::A))
 		movement.x -= speed * deltaTime;
 
-	if(sf::Keyboard::isKeyPressed(sf::Keyboard::D) && !collision(playercoordsx,playercoordsy)){
+	if(sf::Keyboard::isKeyPressed(sf::Keyboard::D) && !collisionx(playercoordsx)){
 		movement.x += speed * deltaTime;
-		std::cout << "d pressed ";
 	}
 
 	if(sf::Keyboard::isKeyPressed(sf::Keyboard::W))
 		movement.y -= speed * deltaTime * 2;
 
-	if(sf::Keyboard::isKeyPressed(sf::Keyboard::S))
+	if(sf::Keyboard::isKeyPressed(sf::Keyboard::S) && !collisiony(playercoordsy)){
 		movement.y += speed * deltaTime * 2;
-	
+		std::cout << playercoordsy << std::endl;
+	}
 	if(movement.x == 0.0f){
 		//idle animation		
 		animation.Update(row,deltaTime,faceRight, true);

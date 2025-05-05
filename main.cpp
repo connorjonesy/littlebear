@@ -22,8 +22,20 @@ int main(){
     Player player(&playerTexture, sf::Vector2u(4,1), 0.3f, 300.0f);
     //Adding an obstacle rectangle shape
     sf::RectangleShape rect1(sf::Vector2f(50,100));
-    rect1.setFillColor(sf::Color(100,250,50));
+    rect1.setFillColor(sf::Color(128,128,128));
     rect1.setPosition(800.0f,300.0f);
+    sf::RectangleShape rect2(sf::Vector2f(2250,1250)); //grass floor
+    rect2.setFillColor(sf::Color(100,250,50));
+    rect2.setPosition(-400.0f,400.0f);
+    sf::Font font;
+    font.loadFromFile("NorthernBack.ttf");
+    sf::Text text;
+    text.setFont(font);
+    text.setString("Little Bear");
+    text.setCharacterSize(44);//pixels
+    text.setFillColor(sf::Color::White);
+    text.setPosition(300.0f, 200.0f);
+
 
 
     float deltaTime = 0.0f;
@@ -45,7 +57,7 @@ int main(){
 	    }
 	}
 
-	player.Update(deltaTime, player.getX(), player.getY(), );//include all coords
+	player.Update(deltaTime, player.getX(), player.getY());//include all coords
 	view.setCenter(player.GetPosition());
 	//RENDER
         // Clear the window
@@ -54,6 +66,8 @@ int main(){
 	//DRAW
         player.Draw(window);
 	window.draw(rect1);
+	window.draw(rect2);
+	window.draw(text);
 	//DISPLAY 
         window.display();
    }
