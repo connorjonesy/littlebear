@@ -1,4 +1,4 @@
-#include "headers/player.h"
+#include "../headers/player.h"
 #include <iostream>
 
 Player::Player(sf::Texture* texture, sf::Vector2u imageCount, float switchTime, float speed) :
@@ -8,7 +8,7 @@ Player::Player(sf::Texture* texture, sf::Vector2u imageCount, float switchTime, 
  	faceRight = true;
 	body.setSize(sf::Vector2f(250.0f, 250.0f));
 	body.setOrigin(body.getSize() / 2.0f);
-	body.setPosition(375,275); 
+	body.setPosition({375,275}); 
 	body.setTexture(texture);
 	}
 
@@ -28,17 +28,17 @@ bool collisiony(float coordsy){
 
 void Player::Update(float deltaTime, float playercoordsx, float playercoordsy){
 	sf::Vector2f movement(0.0f, 0.0f);
-	if(sf::Keyboard::isKeyPressed(sf::Keyboard::A))
+	if(sf::Keyboard::isKeyPressed(sf::Keyboard::Key::A))
 		movement.x -= speed * deltaTime;
 
-	if(sf::Keyboard::isKeyPressed(sf::Keyboard::D) && !collisionx(playercoordsx)){
+	if(sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D) && !collisionx(playercoordsx)){
 		movement.x += speed * deltaTime;
 	}
 
-	if(sf::Keyboard::isKeyPressed(sf::Keyboard::W))
+	if(sf::Keyboard::isKeyPressed(sf::Keyboard::Key::W))
 		movement.y -= speed * deltaTime * 2;
 
-	if(sf::Keyboard::isKeyPressed(sf::Keyboard::S) && !collisiony(playercoordsy)){
+	if(sf::Keyboard::isKeyPressed(sf::Keyboard::Key::S) && !collisiony(playercoordsy)){
 		movement.y += speed * deltaTime * 2;
 		std::cout << playercoordsy << std::endl;
 	}

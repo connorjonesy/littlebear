@@ -1,4 +1,4 @@
-#include "headers/animation.h"
+#include "../headers/animation.h"
 
 Animation::Animation(sf::Texture* texture, sf::Vector2u imageCount, float switchTime){
 	this->imageCount = imageCount;
@@ -6,8 +6,8 @@ Animation::Animation(sf::Texture* texture, sf::Vector2u imageCount, float switch
 	totalTime = 0.0f;
 	currentImage.x = 0;
 
-	uvRect.width = texture->getSize().x / float(imageCount.x);
-	uvRect.height = texture->getSize().y / float(imageCount.y);
+	uvRect.size.x = texture->getSize().x / float(imageCount.x);
+	uvRect.size.y = texture->getSize().y / float(imageCount.y);
 }
 
 
@@ -31,15 +31,13 @@ void Animation::Update(int row, float deltaTime, bool faceRight, bool idle){
 		currentImage.x = 3;
 	}
 	
-	uvRect.top = currentImage.y * uvRect.height;
+	uvRect.position.y = currentImage.y * uvRect.size.y;
 
 	if(faceRight){
-		uvRect.left = currentImage.x *uvRect.width;
-		uvRect.width = abs(uvRect.width);
+		uvRect.position.x = currentImage.x *uvRect.size.x;
+		uvRect.size.x = abs(uvRect.size.x);
 	}else{
-		uvRect.left = (currentImage.x + 1) * abs(uvRect.width);
-		uvRect.width = -abs(uvRect.width);
+		uvRect.size.x = (currentImage.x + 1) * abs(uvRect.size.x);
+		uvRect.size.x = -abs(uvRect.size.x);
 	}
-
-
 }
