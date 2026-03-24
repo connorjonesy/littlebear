@@ -6,7 +6,7 @@ Player::Player(sf::Texture* texture, sf::Vector2u imageCount, float switchTime, 
 	this->speed = speed;
 	row = 0;
  	faceRight = true;
-	gravity = 9.81;
+	gravity = 360.81;
 	isOnGround = false;
 	velocity = {0.0f,0.0f};
 	body.setSize(sf::Vector2f(250.0f, 250.0f));
@@ -17,6 +17,20 @@ Player::Player(sf::Texture* texture, sf::Vector2u imageCount, float switchTime, 
 
 Player::~Player(){}
 
+sf::FloatRect Player::getBounds(){
+	sf::FloatRect globalBounds = body.getGlobalBounds();
+
+	float trimX = 63.0f; // trim from left
+	float trimY = 100.f;  // trim from top
+	float trimW = 126.0f; // total width reduction (both sides)
+	float trimH = 100.f; // total height reduction (top + bottom)
+
+	return sf::FloatRect(
+		sf::Vector2f(globalBounds.position.x + trimX, globalBounds.position.y + trimY),
+		sf::Vector2f(globalBounds.size.x - trimW, globalBounds.size.y - trimH)
+	);
+}
+
 void Player::resolveCollisions(std::vector<Platform>& platforms){
 	isOnGround = false;
 	for (auto& platform : platforms) {
@@ -26,8 +40,8 @@ void Player::resolveCollisions(std::vector<Platform>& platforms){
 		// Figure out overlap on each axis
 		sf::FloatRect player = getBounds();
 		sf::FloatRect plat   = platform.getBounds();
-		//TODO:: Change the bounds for the player cuz theres whitespace around the bear
-		float overlapLeft   = (player.position.x + player.size.x - 100) - plat.position.x;
+
+		float overlapLeft   = (player.position.x + player.size.x) - plat.position.x;
 		float overlapRight  = (plat.position.x + plat.size.x)     - player.position.x;
 		float overlapTop    = (player.position.y + player.size.y)  - plat.position.y;
 		float overlapBottom = (plat.position.y + plat.size.y)      - player.position.y;

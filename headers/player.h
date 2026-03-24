@@ -12,7 +12,7 @@ class Player{
 		float getX(){return body.getPosition().x;};
 		float getY(){return body.getPosition().y;};
 		void resolveCollisions(std::vector<Platform>& platforms);
-		sf::FloatRect getBounds() const { return body.getGlobalBounds(); }
+		sf::FloatRect getBounds();
 	private:
 		sf::RectangleShape body;
 		Animation animation;

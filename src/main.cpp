@@ -24,7 +24,7 @@ int main(){
     Player player(&playerTexture, sf::Vector2u(4,1), 0.3f, 300.0f);
     Platform ground; //grass floor
     ground.shape.setSize(sf::Vector2f(500,500));
-    ground.shape.setPosition({-400.0f,400.0f});
+    ground.shape.setPosition({200.0f,400.0f});
     ground.shape.setFillColor(sf::Color(100,250,50));
     level.platforms.push_back(ground);
 
