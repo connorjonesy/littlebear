@@ -1,13 +1,13 @@
 #include "../headers/player.h"
 #include "../headers/platform.h"
+#include <iostream>
 
 Player::Player(sf::Texture* texture, sf::Vector2u imageCount, float switchTime, float speed) :
 	animation(texture,imageCount,switchTime){
 	this->speed = speed;
 	row = 0;
  	faceRight = true;
-	gravity = 360.81;
-	isOnGround = false;
+	isOnGround = true;
 	velocity = {0.0f,0.0f};
 	body.setSize(sf::Vector2f(250.0f, 250.0f));
 	body.setOrigin(body.getSize() / 2.0f);
@@ -47,11 +47,11 @@ void Player::resolveCollisions(std::vector<Platform>& platforms){
 		float overlapBottom = (plat.position.y + plat.size.y)      - player.position.y;
 
 		// Find the smallest overlap — that's the axis to resolve on
-		bool fromLeft  = std::abs(overlapLeft)  < std::abs(overlapRight);
-		bool fromTop   = std::abs(overlapTop)   < std::abs(overlapBottom);
+		bool fromLeft = std::abs(overlapLeft) < std::abs(overlapRight);
+		bool fromTop = std::abs(overlapTop) < std::abs(overlapBottom);
 
-		float minXOverlap = fromLeft  ? overlapLeft  : overlapRight;
-		float minYOverlap = fromTop   ? overlapTop   : overlapBottom;
+		float minXOverlap = fromLeft ? overlapLeft : overlapRight;
+		float minYOverlap = fromTop ? overlapTop : overlapBottom;
 
 		if (std::abs(minXOverlap) < std::abs(minYOverlap)) {
 			// Horizontal collision
@@ -67,20 +67,39 @@ void Player::resolveCollisions(std::vector<Platform>& platforms){
 	}
 }
 
+void Player::applyGravity(float deltaTime){
+	if(isOnGround == true){
+		return;
+	}
+	if(velocity.y < terminalVelocity){
+		//lil b is in the air, increase velocity
+		velocity.y += gravity * deltaTime;
+	}
+}
+
+void Player::jump(float deltaTime){
+	velocity.y -= 2*gravity * deltaTime;
+}
+
 void Player::Update(float deltaTime, std::vector<Platform>& platforms){
-	velocity = {0.0f,0.0f};
+	velocity.x = 0.0f;
 	if(sf::Keyboard::isKeyPressed(sf::Keyboard::Key::A))
 		velocity.x -= speed * deltaTime;
 
 	if(sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D)){
 		velocity.x += speed * deltaTime;
 	}
-
+	/*
+	 * Uncomment if we want to incorporate this somehow in the future.. swimming?
 	if(sf::Keyboard::isKeyPressed(sf::Keyboard::Key::W))
 		velocity.y -= speed * deltaTime;
 
 	if(sf::Keyboard::isKeyPressed(sf::Keyboard::Key::S)){
 		velocity.y += speed * deltaTime;
+	}
+	*/
+	if(sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Space)){
+		jump(deltaTime);
 	}
 	if(velocity.x == 0.0f){
 		//idle animation		
@@ -93,11 +112,11 @@ void Player::Update(float deltaTime, std::vector<Platform>& platforms){
 
 		animation.Update(row, deltaTime, faceRight,false);
 	}
-	//add gravity
-	velocity.y += gravity * deltaTime;
+	applyGravity(deltaTime);
 	body.setTextureRect(animation.uvRect);
 	body.move(velocity);
 	resolveCollisions(platforms);
+	std::cout << velocity.y << std::endl;
 }
 
 void Player::Draw(sf::RenderWindow& window){

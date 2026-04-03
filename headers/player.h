@@ -13,13 +13,16 @@ class Player{
 		float getY(){return body.getPosition().y;};
 		void resolveCollisions(std::vector<Platform>& platforms);
 		sf::FloatRect getBounds();
+		void applyGravity(float deltaTime);
+		void jump(float deltaTime);
 	private:
 		sf::RectangleShape body;
 		Animation animation;
 		unsigned int row;
 		float speed;
 		bool faceRight;
-		float gravity;
+		const float gravity = 2.9;
 		bool isOnGround;
 		sf::Vector2f velocity;
+		const float terminalVelocity = 4; //adjust as we go
 };
