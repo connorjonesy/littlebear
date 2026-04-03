@@ -9,12 +9,25 @@ static const float VIEW_HEIGHT = 1000.0f;
 void ResizeView(const sf::RenderWindow& window, sf::View& view){
 	float aspectRatio = float(window.getSize().x) / float(window.getSize().y);
 	view.setSize({VIEW_HEIGHT * aspectRatio, VIEW_HEIGHT});
+    view.setCenter({VIEW_HEIGHT / 2.0f, VIEW_HEIGHT / 2.0f});
 }
 
 int main(){
-    sf::RenderWindow window(sf::VideoMode({1000, 1000}), "little bear");
+    sf::RenderWindow window(sf::VideoMode::getDesktopMode(), "little bear");
     window.setPosition({0,0});
-    sf::View view(sf::Vector2f(0.0f,0.0f),sf::Vector2f(VIEW_HEIGHT,VIEW_HEIGHT));
+    sf::View view;
+    ResizeView(window,view);
+
+    //Add background image (TEMP: can add multiple levels and bg's later)
+    sf::Texture bgTexture;
+    if (!bgTexture.loadFromFile("../assets/bg1.png"))
+        return -1;
+    sf::Sprite bg(bgTexture);
+    sf::Vector2u textureSize = bgTexture.getSize();
+    float scaleX = static_cast<float>(sf::VideoMode::getDesktopMode().size.x) / textureSize.x;
+    float scaleY = static_cast<float>(sf::VideoMode::getDesktopMode().size.y) / textureSize.y;
+    bg.setScale({scaleX, scaleY});
+    bg.setOrigin({460,0.0f});
 
     //Adding a texture to the shape
     sf::Texture playerTexture;
@@ -27,7 +40,8 @@ int main(){
     ground.shape.setPosition({200.0f,400.0f});
     ground.shape.setFillColor(sf::Color(100,250,50));
     level.platforms.push_back(ground);
-
+    
+    //Adding the little bear text to screen
     sf::Font font;
     if (!font.openFromFile("../assets/NorthernBack.ttf"))
         return -1;
@@ -50,12 +64,12 @@ int main(){
                 ResizeView(window,view);
         }
         player.Update(deltaTime, level.platforms);
-        view.setCenter(player.GetPosition());
         //RENDER
         // Clear the window
         window.clear(sf::Color::Black);
         window.setView(view);
         //DRAW
+        window.draw(bg);
         player.Draw(window);
         for (auto& platform : level.platforms) {
             window.draw(platform.shape);
