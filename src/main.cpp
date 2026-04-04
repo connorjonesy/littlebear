@@ -27,18 +27,21 @@ int main(){
     float scaleX = static_cast<float>(sf::VideoMode::getDesktopMode().size.x) / textureSize.x;
     float scaleY = static_cast<float>(sf::VideoMode::getDesktopMode().size.y) / textureSize.y;
     bg.setScale({scaleX, scaleY});
-    bg.setOrigin({460,0.0f});
+    bg.setOrigin({0.0f,0.0f}); //hacked to work, TODO fix
+    bg.setPosition({-360.0f,0.0f});
 
-    //Adding a texture to the shape
+    //Create player texture
     sf::Texture playerTexture;
     if (!playerTexture.loadFromFile("../assets/little-bear-walk.png"))
         return -1;
-    Level level;
     Player player(&playerTexture, sf::Vector2u(4,1), 0.3f, 300.0f);
+    
+    //Create level & platforms
+    Level level;
     Platform ground; //grass floor
-    ground.shape.setSize(sf::Vector2f(500,5000));
-    ground.shape.setPosition({200.0f,400.0f});
-    ground.shape.setFillColor(sf::Color(100,250,50));
+    ground.shape.setSize(sf::Vector2f(2000,10));
+    ground.shape.setPosition({-460.0f,960.0f});
+    ground.shape.setFillColor(sf::Color::Transparent);
     level.platforms.push_back(ground);
     
     //Adding the little bear text to screen
@@ -46,13 +49,13 @@ int main(){
     if (!font.openFromFile("../assets/NorthernBack.ttf"))
         return -1;
     sf::Text text(font, "Little Bear", 44);
-    text.setFillColor(sf::Color::White);
+    text.setFillColor(sf::Color::Black);
     text.setPosition({0.0f, 200.0f});
 
-    float deltaTime = 0.0f;
-    sf::Clock clock;
 
     // Main loop to keep the window open
+    float deltaTime = 0.0f;
+    sf::Clock clock;
     while (window.isOpen()){
         deltaTime = clock.restart().asSeconds();
         //WINDOW  Event handling

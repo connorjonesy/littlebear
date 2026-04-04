@@ -9,7 +9,7 @@ Player::Player(sf::Texture* texture, sf::Vector2u imageCount, float switchTime, 
  	faceRight = true;
 	isOnGround = true;
 	velocity = {0.0f,0.0f};
-	body.setSize(sf::Vector2f(250.0f, 250.0f));
+	body.setSize(sf::Vector2f(100.0f, 100.0f));
 	body.setOrigin(body.getSize() / 2.0f);
 	body.setPosition({375,275}); 
 	body.setTexture(texture);
@@ -18,12 +18,18 @@ Player::Player(sf::Texture* texture, sf::Vector2u imageCount, float switchTime, 
 Player::~Player(){}
 
 sf::FloatRect Player::getBounds(){
+	//This func is needed to overload the getGlobalBounds in order to account for whitespace around lb
 	sf::FloatRect globalBounds = body.getGlobalBounds();
 
-	float trimX = 63.0f; // trim from left
-	float trimY = 100.f;  // trim from top
-	float trimW = 126.0f; // total width reduction (both sides)
-	float trimH = 100.f; // total height reduction (top + bottom)
+	float trimXRatio = 63.f  / 250.f; // ~0.252
+	float trimYRatio = 100.f / 250.f; // ~0.4
+	float trimWRatio = 126.f / 250.f; // ~0.504
+	float trimHRatio = 100.f / 250.f; // ~0.4
+
+	float trimX = globalBounds.size.x * trimXRatio;
+	float trimY = globalBounds.size.y * trimYRatio;
+	float trimW = globalBounds.size.x * trimWRatio;
+	float trimH = globalBounds.size.y * trimHRatio;
 
 	return sf::FloatRect(
 		sf::Vector2f(globalBounds.position.x + trimX, globalBounds.position.y + trimY),
@@ -40,11 +46,11 @@ void Player::resolveCollisions(std::vector<Platform>& platforms){
 		// Figure out overlap on each axis
 		sf::FloatRect player = getBounds();
 		sf::FloatRect plat   = platform.getBounds();
-
+		
 		float overlapLeft   = (player.position.x + player.size.x) - plat.position.x;
-		float overlapRight  = (plat.position.x + plat.size.x)     - player.position.x;
-		float overlapTop    = (player.position.y + player.size.y)  - plat.position.y;
-		float overlapBottom = (plat.position.y + plat.size.y)      - player.position.y;
+		float overlapRight  = (plat.position.x + plat.size.x) - player.position.x;
+		float overlapTop    = (player.position.y + player.size.y) - plat.position.y;
+		float overlapBottom = (plat.position.y + plat.size.y) - player.position.y;
 
 		// Find the smallest overlap — that's the axis to resolve on
 		bool fromLeft = std::abs(overlapLeft) < std::abs(overlapRight);
@@ -83,6 +89,7 @@ void Player::jump(float deltaTime){
 
 void Player::Update(float deltaTime, std::vector<Platform>& platforms){
 	velocity.x = 0.0f;
+	//velocity.y = 0.0f; // uncomment for testing
 	if(sf::Keyboard::isKeyPressed(sf::Keyboard::Key::A))
 		velocity.x -= speed * deltaTime;
 
@@ -90,7 +97,7 @@ void Player::Update(float deltaTime, std::vector<Platform>& platforms){
 		velocity.x += speed * deltaTime;
 	}
 	/*
-	 * Uncomment if we want to incorporate this somehow in the future.. swimming?
+	 // * Uncomment for testing
 	if(sf::Keyboard::isKeyPressed(sf::Keyboard::Key::W))
 		velocity.y -= speed * deltaTime;
 
@@ -98,6 +105,7 @@ void Player::Update(float deltaTime, std::vector<Platform>& platforms){
 		velocity.y += speed * deltaTime;
 	}
 	*/
+	
 	if(sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Space)){
 		jump(deltaTime);
 	}
@@ -116,7 +124,6 @@ void Player::Update(float deltaTime, std::vector<Platform>& platforms){
 	body.setTextureRect(animation.uvRect);
 	body.move(velocity);
 	resolveCollisions(platforms);
-	std::cout << velocity.y << std::endl;
 }
 
 void Player::Draw(sf::RenderWindow& window){
