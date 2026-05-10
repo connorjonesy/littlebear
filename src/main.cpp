@@ -30,6 +30,14 @@ int main(){
     bg.setOrigin({0.0f,0.0f}); //hacked to work, TODO fix
     bg.setPosition({-360.0f,0.0f});
 
+    //Adding the little bear text to screen
+    sf::Font font;
+    if (!font.openFromFile("../assets/NorthernBack.ttf"))
+        return -1;
+    sf::Text text(font, "Little Bear", 44);
+    text.setFillColor(sf::Color::Black);
+    text.setPosition({0.0f, 200.0f});
+
     //Create player texture
     sf::Texture playerTexture;
     if (!playerTexture.loadFromFile("../assets/little-bear-walk.png"))
@@ -43,15 +51,12 @@ int main(){
     ground.shape.setPosition({-460.0f,960.0f});
     ground.shape.setFillColor(sf::Color::Transparent);
     level.platforms.push_back(ground);
-    
-    //Adding the little bear text to screen
-    sf::Font font;
-    if (!font.openFromFile("../assets/NorthernBack.ttf"))
-        return -1;
-    sf::Text text(font, "Little Bear", 44);
-    text.setFillColor(sf::Color::Black);
-    text.setPosition({0.0f, 200.0f});
-
+    //Test platform for testing jumping physics moving forward
+    Platform tester;
+    tester.shape.setSize(sf::Vector2f(400,40));
+    tester.shape.setPosition({0.0f,460.0f});
+    tester.shape.setFillColor(sf::Color::Black);
+    level.platforms.push_back(tester);
 
     // Main loop to keep the window open
     float deltaTime = 0.0f;
@@ -71,13 +76,13 @@ int main(){
         // Clear the window
         window.clear(sf::Color::Black);
         window.setView(view);
-        //DRAW
+        //DRAW --order decides z-index
         window.draw(bg);
+        window.draw(text);
         player.Draw(window);
         for (auto& platform : level.platforms) {
             window.draw(platform.shape);
         }
-        window.draw(text);
         //DISPLAY 
         window.display();
    }
