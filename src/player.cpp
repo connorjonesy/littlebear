@@ -1,6 +1,5 @@
 #include "../headers/player.h"
 #include "../headers/platform.h"
-#include <iostream>
 
 Player::Player(sf::Texture* texture, sf::Vector2u imageCount, float switchTime, float speed) :
 	animation(texture,imageCount,switchTime){
@@ -90,6 +89,7 @@ void Player::jump(float deltaTime){
 void Player::Update(float deltaTime, std::vector<Platform>& platforms){
 	velocity.x = 0.0f;
 	//velocity.y = 0.0f; // uncomment for testing
+
 	if(sf::Keyboard::isKeyPressed(sf::Keyboard::Key::A))
 		velocity.x -= speed * deltaTime;
 

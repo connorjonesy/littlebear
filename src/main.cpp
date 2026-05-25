@@ -57,8 +57,11 @@ int main(){
     tester.shape.setPosition({0.0f,460.0f});
     tester.shape.setFillColor(sf::Color::Black);
     level.platforms.push_back(tester);
+    //Create Menu object
+    Menu menu;
 
     // Main loop to keep the window open
+    bool isPaused = false;
     float deltaTime = 0.0f;
     sf::Clock clock;
     while (window.isOpen()){
@@ -70,6 +73,11 @@ int main(){
                 window.close();
             if(event->is<sf::Event::Resized>())
                 ResizeView(window,view);
+            else if (const auto* keyPressed = event->getIf<sf::Event::KeyPressed>()){
+                if (keyPressed->scancode == sf::Keyboard::Scancode::Escape)
+                    isPaused = !isPaused;
+            }
+
         }
         player.Update(deltaTime, level.platforms);
         //RENDER
@@ -82,6 +90,9 @@ int main(){
         player.Draw(window);
         for (auto& platform : level.platforms) {
             window.draw(platform.shape);
+        }
+        if(isPaused){
+            menu.showMenu(1, window);
         }
         //DISPLAY 
         window.display();
