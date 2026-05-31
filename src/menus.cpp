@@ -41,12 +41,10 @@ void Menu::displayPauseMenu(sf::RenderWindow& window){
 	std::cout << "Mouse x,y: (" << localMousePos.x << "," << localMousePos.y << ")" << std::endl;
 	
 	//TODO Refactor lol
-	if(localMousePos.x > menu_UI.getPosition().x && localMousePos.x < (menu_UI.getPosition().x + menu_UI.getSize().x) && localMousePos.y > menu_UI.getPosition().y && localMousePos.y < (menu_UI.getPosition().y + menu_UI.getSize().y))
+	if(localMousePos.x > menu_UI.getPosition().x && localMousePos.x < (menu_UI.getPosition().x + menu_UI.getSize().x) && localMousePos.y > menu_UI.getPosition().y && localMousePos.y < (menu_UI.getPosition().y + menu_UI.getSize().y) && sf::Mouse::isButtonPressed(sf::Mouse::Button::Left)){
 		std::cout << "Mouse is within Pause Menu" << std::endl;
-
-	//if user clicks button
-	    //window.close();
-
+		window.close();
+	}
 }
 
 void Menu::displayMainMenu(){
