@@ -3,18 +3,26 @@
 #include "../headers/player.h"
 #include "../headers/level.h"
 using namespace std;
+#include <iostream>
 
 static const float VIEW_HEIGHT = 1000.0f;
 
 void ResizeView(const sf::RenderWindow& window, sf::View& view){
 	float aspectRatio = float(window.getSize().x) / float(window.getSize().y);
+    float viewWidth = VIEW_HEIGHT * aspectRatio;
 	view.setSize({VIEW_HEIGHT * aspectRatio, VIEW_HEIGHT});
     view.setCenter({VIEW_HEIGHT / 2.0f, VIEW_HEIGHT / 2.0f});
+    view.setCenter({viewWidth / 2.0f, VIEW_HEIGHT / 2.0f});
 }
 
 int main(){
+
+    std::cout << "SFML Version: " 
+              << SFML_VERSION_MAJOR << "." 
+              << SFML_VERSION_MINOR << "." 
+              << SFML_VERSION_PATCH << std::endl;
+
     sf::RenderWindow window(sf::VideoMode::getDesktopMode(), "little bear");
-    window.setPosition({0,0});
     sf::View view;
     ResizeView(window,view);
 
@@ -22,13 +30,15 @@ int main(){
     sf::Texture bgTexture;
     if (!bgTexture.loadFromFile("../assets/bg1.png"))
         return -1;
+
     sf::Sprite bg(bgTexture);
     sf::Vector2u textureSize = bgTexture.getSize();
-    float scaleX = static_cast<float>(sf::VideoMode::getDesktopMode().size.x) / textureSize.x;
-    float scaleY = static_cast<float>(sf::VideoMode::getDesktopMode().size.y) / textureSize.y;
+
+    sf::Vector2u windowSize = window.getSize();
+    float scaleX = static_cast<float>(windowSize.x) / textureSize.x;
+    float scaleY = static_cast<float>(windowSize.y) / textureSize.y;
     bg.setScale({scaleX, scaleY});
-    bg.setOrigin({0.0f,0.0f}); //hacked to work, TODO fix
-    bg.setPosition({-360.0f,0.0f});
+    bg.setPosition({0.0f,0.0f});
 
     //Adding the little bear text to screen
     sf::Font font;
@@ -57,8 +67,11 @@ int main(){
     tester.shape.setPosition({0.0f,460.0f});
     tester.shape.setFillColor(sf::Color::Black);
     level.platforms.push_back(tester);
+    //Create Menu object
+    Menu menu;
 
     // Main loop to keep the window open
+    bool isPaused = false;
     float deltaTime = 0.0f;
     sf::Clock clock;
     while (window.isOpen()){
@@ -70,6 +83,11 @@ int main(){
                 window.close();
             if(event->is<sf::Event::Resized>())
                 ResizeView(window,view);
+            else if (const auto* keyPressed = event->getIf<sf::Event::KeyPressed>()){
+                if (keyPressed->scancode == sf::Keyboard::Scancode::Escape)
+                    isPaused = !isPaused;
+            }
+
         }
         player.Update(deltaTime, level.platforms);
         //RENDER
@@ -82,6 +100,9 @@ int main(){
         player.Draw(window);
         for (auto& platform : level.platforms) {
             window.draw(platform.shape);
+        }
+        if(isPaused){
+            menu.showMenu(1, window);
         }
         //DISPLAY 
         window.display();

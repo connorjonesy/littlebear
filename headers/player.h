@@ -1,6 +1,7 @@
 #include <SFML/Graphics.hpp>
 #include "animation.h"
 #include "platform.h"
+#include "menus.h"
 #include <SFML/Window.hpp>
 class Player{
 	public:
