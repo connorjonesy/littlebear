@@ -11,7 +11,6 @@ void ResizeView(const sf::RenderWindow& window, sf::View& view){
 	float aspectRatio = float(window.getSize().x) / float(window.getSize().y);
     float viewWidth = VIEW_HEIGHT * aspectRatio;
 	view.setSize({VIEW_HEIGHT * aspectRatio, VIEW_HEIGHT});
-    view.setCenter({VIEW_HEIGHT / 2.0f, VIEW_HEIGHT / 2.0f});
     view.setCenter({viewWidth / 2.0f, VIEW_HEIGHT / 2.0f});
 }
 
