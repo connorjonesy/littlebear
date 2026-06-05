@@ -57,8 +57,8 @@ int main(){
     Level level;
     Platform ground; //grass floor
     ground.shape.setSize(sf::Vector2f(2000,10));
-    ground.shape.setPosition({-460.0f,960.0f});
-    ground.shape.setFillColor(sf::Color::Transparent);
+    ground.shape.setPosition({0.0f,960.0f});
+    ground.shape.setFillColor(sf::Color::Black);
     level.platforms.push_back(ground);
     //Test platform for testing jumping physics moving forward
     Platform tester;
@@ -66,6 +66,11 @@ int main(){
     tester.shape.setPosition({0.0f,460.0f});
     tester.shape.setFillColor(sf::Color::Black);
     level.platforms.push_back(tester);
+    //Add Gun --sfml 3.1 way to draw sprites
+    sf::Texture revolver_texture("../assets/revolver.png"); //Throws an sf::Exception if error
+    sf::Sprite revolver_sprite(revolver_texture);
+    revolver_sprite.setPosition({300.f, 380.f});
+    revolver_sprite.scale({3.f, 3.f});
     //Create Menu object
     Menu menu;
 
@@ -97,6 +102,7 @@ int main(){
         window.draw(bg);
         window.draw(text);
         player.Draw(window);
+        window.draw(revolver_sprite);
         for (auto& platform : level.platforms) {
             window.draw(platform.shape);
         }

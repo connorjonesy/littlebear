@@ -20,7 +20,8 @@ void Menu::showMenu(int choice, sf::RenderWindow& window){
 }
 
 void Menu::displayPauseMenu(sf::RenderWindow& window){
-	//TODO fix hardcoded centering of UI elements
+
+	
 	sf::RectangleShape menu_UI;
 	menu_UI.setSize({264.0f, 100.0f});
 	menu_UI.setOrigin({float(menu_UI.getSize().x / 2.f),0.0f});
